@@ -1,0 +1,17 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "db/queries"       # where you write your SQL queries
+    schema: "db/migrations"          # where your migration files live
+    gen:
+      go:
+        package: "db"
+        out: "db/sqlc"        # where generated code goes
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: true      # generates a Querier interface — great for testing
+        emit_exact_table_names: false
+        emit_empty_slices: true
+        overrides:                        # ← ADD THIS
+          - db_type: "uuid"
+            go_type: "string"
