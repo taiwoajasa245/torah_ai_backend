@@ -80,7 +80,7 @@ func (route *Router) RegisterRoutes() http.Handler {
 
 func (route *Router) ServerIsWorking(w http.ResponseWriter, r *http.Request) {
 	resp := make(map[string]string)
-	resp["message"] = "Welcome to Memory verse api"
+	resp["message"] = "Welcome to TorahAi api"
 	response.Success(w, resp, "Success")
 }
 
