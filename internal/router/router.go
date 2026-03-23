@@ -21,7 +21,6 @@ import (
 	"github.com/go-chi/cors"
 	httpSwagger "github.com/swaggo/http-swagger"
 
-	// "github.com/swaggo/swag/example/basic/docs"
 	"github.com/taiwoajasa245/torah_ai_backend/internal/auth"
 	"github.com/taiwoajasa245/torah_ai_backend/internal/chat"
 	"github.com/taiwoajasa245/torah_ai_backend/internal/database"
@@ -65,7 +64,7 @@ func (route *Router) RegisterRoutes() http.Handler {
 	r.Get("/", route.ServerIsWorking)
 
 	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:"+route.Cfg.Port+"/swagger/doc.json"), //The url pointing to API definition
+		httpSwagger.URL(route.Cfg.SwaggerHost+"/swagger/doc.json"), //The url pointing to API definition
 	))
 
 	r.Route("/torah_ai_backend/v1", func(r chi.Router) {
