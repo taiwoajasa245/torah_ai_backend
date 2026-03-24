@@ -91,27 +91,31 @@ setup:
 	make docker-run
 	make migrate-up
 
+
 migrate-up:
 	@echo "Running migrations up..."
 	migrate -path db/migrations \
-	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:$(DB_PORT)/$(DB_DATABASE)?sslmode=disable" \
+	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_DATABASE)?sslmode=$(DB_SSLMODE)&search_path=$(DB_SCHEMA)" \
 	up
 
 migrate-down:
 	@echo "Rolling back last migration..."
 	migrate -path db/migrations \
-	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:$(DB_PORT)/$(DB_DATABASE)?sslmode=disable" \
+	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_DATABASE)?sslmode=$(DB_SSLMODE)&search_path=$(DB_SCHEMA)" \
 	down 1
+
+migrate-fix:
+	@echo "Fixing dirty database..."
+	migrate -path db/migrations \
+	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_DATABASE)?sslmode=$(DB_SSLMODE)&search_path=$(DB_SCHEMA)" \
+	force 0
+
+
 
 migrate-create:
 	@echo "Creating migration: $(name)"
 	migrate create -ext sql -dir db/migrations -seq $(name)
 
-migrate-fix:
-	@echo "Fixing dirty database..."
-	migrate -path db/migrations \
-	-database "postgresql://$(DB_USERNAME):$(DB_PASSWORD)@localhost:$(DB_PORT)/$(DB_DATABASE)?sslmode=disable" \
-	force 0
 
 sqlc-generate:
 	@echo "Generating sqlc code..."

@@ -25,6 +25,7 @@ type Config struct {
 	SmtpPort     string
 	SwaggerHost  string
 	GeminiAPIKey string
+	AppURL       string
 }
 
 // LoadConfig loads environment variables from the .env file
@@ -70,6 +71,7 @@ func LoadConfig() *Config {
 		SmtpPort:     getEnv("SMTP_PORT", "587"),
 		SwaggerHost:  getEnv("SWAGGER_HOST", "http://localhost:8080"),
 		GeminiAPIKey: getEnv("GEMINI_API_KEY", getEnv("GOOGLE_API_KEY", "")),
+		AppURL:       getEnv("APP_URL", ""),
 	}
 
 	return cfg

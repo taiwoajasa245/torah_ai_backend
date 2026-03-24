@@ -68,3 +68,42 @@ func (s *Server) HTTPServer() *http.Server {
 		IdleTimeout:  60 * time.Second,
 	}
 }
+
+func (s *Server) StartKeepAlive() {
+	if s.Cfg.AppEnv != "production" {
+		log.Println("KeepAlive: Skipping in development mode.")
+		return
+	}
+
+	if s.Cfg.AppURL == "" {
+		log.Println("KeepAlive: No APP_URL configured, skipping.")
+		return
+	}
+
+	log.Printf("Starting KeepAlive ping for: %s every 5 minutes", s.Cfg.AppURL)
+
+	go func() {
+		// Wait a bit before starting first ping to ensure server is fully up
+		time.Sleep(30 * time.Second)
+
+		// Initial ping
+		resp, err := http.Get(s.Cfg.AppURL)
+		if err == nil {
+			resp.Body.Close()
+			log.Printf("KeepAlive: Initial ping successful (%s)", resp.Status)
+		}
+
+		ticker := time.NewTicker(5 * time.Minute)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			resp, err := http.Get(s.Cfg.AppURL)
+			if err != nil {
+				log.Printf("KeepAlive: Ping failed: %v", err)
+				continue
+			}
+			resp.Body.Close()
+			log.Printf("KeepAlive: Ping successful (%v)", resp.Status)
+		}
+	}()
+}

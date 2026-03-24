@@ -48,7 +48,7 @@ func main() {
 	server := server.NewServer(db, cfg)
 	httpServer := server.HTTPServer()
 
-	// server.StartBackgroundJobs()
+	server.StartKeepAlive()
 
 	done := make(chan bool, 1)
 
